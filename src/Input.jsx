@@ -1,15 +1,25 @@
+
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import Box from './Box';
+
+
+
 export default function Input({ updateinfo }) {
     const [city, setCity] = useState("");
     const url = "http://api.openweathermap.org/data/2.5/weather";
-    const api_key = "bd342e6cbf20928278f5b1ee9dddeeff";
+
+ 
+    
+    const apiKey = import.meta.env.VITE_API_KEY;
+
     const fetchUrl = async () => {
 
         try{
-            let data = await fetch(`${url}?q=${city}&appid=${api_key}`);
+            let data = await fetch(`${url}?q=${city}&appid=${apiKey}&units=metric`);
+            console.log(import.meta.env.VITE_API_KEY); // Should show your API key now
+
+            console.log(apiKey)
             let response = await data.json();
             const cityinfo = {
                 city: city,
@@ -42,12 +52,13 @@ export default function Input({ updateinfo }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!city.trim()) return; // Prevent empty search
         console.log(city);
-        setCity("");
         let newinfo = await fetchUrl();
         updateinfo(newinfo);
-
+        setCity("");
     };
+    
 
 
     return (
